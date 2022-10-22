@@ -24,6 +24,8 @@ The above will produce `target/mynd-1.0-SNAPSHOT.jar`.
 
 **Note:** while compilation and Maven requires Java 8 (does not compile under Java 17), it seems it does run with Java 17.
 
+**Note:** at this point the planner needs to be called from its root project folder, because it calls the PDDL `translate` Python system in a relative path wrt that location. So one needs to first cd into myND planner folder and then runt it. This means the paths to the PDDL files need to be absolute (or from the myND folder!).
+
 To see all options available:
 
 ```shell
