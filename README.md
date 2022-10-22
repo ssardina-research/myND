@@ -4,7 +4,7 @@ This is a fork of the [original myND repository](https://github.com/robertmattmu
 
 ## Build it
 
-myND requires Java 1.8 and Maven.
+myND requires Java 8 and Maven.
 
 ```shell
 $ sudo apt-get install openjdk-8-jdk maven
@@ -21,6 +21,8 @@ $ JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ mvn package -Dmaven.test.skip=tru
 The above will produce `target/mynd-1.0-SNAPSHOT.jar`.
 
 ## Run it
+
+**Note:** while compilation and Maven requires Java 8 (does not compile under Java 17), it seems it does run with Java 17.
 
 To see all options available:
 
@@ -66,9 +68,6 @@ There is also a script `mynd.sh` to run the planner with default options:
 ```shell
 $ ./mynd.sh data/fond-pddl/blocksworld/domain.pddl data/fond-pddl/blocksworld/p10.pddl
 ```
-
-
-
 
 ### Running from class files
 
