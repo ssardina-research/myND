@@ -1,6 +1,14 @@
 package mynd;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Paths;
+
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.util.Locale;
@@ -28,7 +36,8 @@ import args4j.CmdLineParser;
 import args4j.ParserProperties;
 
 /**
- * myND takes as input a description of a FOND or POND planning task and tries to solve it using an
+ * myND takes as input a description of a FOND or POND planning task and tries
+ * to solve it using an
  * appropriate heuristic.
  *
  * @author Robert Mattmueller
@@ -62,11 +71,11 @@ public class MyNDPlanner {
   /**
    * CEGAR options:
    */
-  private CegarSearch.RefinementAlgorithm cegarRefinementAlgorithm =
-      CegarSearch.RefinementAlgorithm.REFINEMENT_DFS;
+  private CegarSearch.RefinementAlgorithm cegarRefinementAlgorithm = CegarSearch.RefinementAlgorithm.REFINEMENT_DFS;
 
   /**
-   * Start time of the planner. Parsing and initialization of the planning problem is not measured.
+   * Start time of the planner. Parsing and initialization of the planning problem
+   * is not measured.
    */
   private static long startTime;
 
@@ -103,7 +112,8 @@ public class MyNDPlanner {
   }
 
   /**
-   * Main method expecting a single command line argument, the name of the input SAS file.
+   * Main method expecting a single command line argument, the name of the input
+   * SAS file.
    *
    * @param args Command line arguments.
    * @throws IOException
@@ -151,31 +161,29 @@ public class MyNDPlanner {
         + " seconds.");
   }
 
-  private void execute_translator(){
+  private void execute_translator() {
 
     String domain = new File(Global.options.getDomainFilename()).getAbsolutePath();
     String instance = new File(Global.options.getInstanceFilename()).getAbsolutePath();
     String translator;
 
-
-
-    if(Global.options.type == Options.Type.FOND){
-      translator = new File("translator-fond/translate.py").getAbsolutePath();
-    }else if(Global.options.type == Options.Type.POND){
-      translator = new File("translator-pond/translate.py").getAbsolutePath();
-    }else{
+    String translatorPath = Global.options.getTranslatorsPath();
+    if (Global.options.type == Options.Type.FOND) {
+      translator = Paths.get(translatorPath, "translator-fond", "translate.py").toFile().getAbsolutePath();;
+    } else if (Global.options.type == Options.Type.POND) {
+      translator = Paths.get(translatorPath, "translator-fond", "translate.py").toFile().getAbsolutePath();;
+    } else {
       System.err.println("Translate type not specified");
       return;
     }
 
-
     try {
-      Process translate_p = new ProcessBuilder(translator,domain,instance).start();
+      Process translate_p = new ProcessBuilder(translator, domain, instance).start();
       InputStream is = translate_p.getInputStream();
       InputStreamReader isr = new InputStreamReader(is);
       BufferedReader br = new BufferedReader(isr);
       String line;
-      System.out.printf("Output of running %s is:\n",translator);
+      System.out.printf("Output of running %s is:\n", translator);
       while ((line = br.readLine()) != null) {
         System.out.println(line);
       }
@@ -183,11 +191,11 @@ public class MyNDPlanner {
       e.printStackTrace();
     }
 
-
   }
 
   /**
    * Initialize myND by parsing planning options and the SAS-file.
+   * 
    * @param args
    * @throws IOException
    * @throws FileNotFoundException
@@ -195,26 +203,35 @@ public class MyNDPlanner {
   private void initialize(String[] args) throws FileNotFoundException, IOException {
     // Create either a partially observable or a fully observable problem.
     assert problem == null;
-    CmdLineParser parser =
-        new CmdLineParser(Global.options, ParserProperties.defaults().withOptionSorter(null));
+    System.out.println("MyND FOND Planner (improved/cleanup version by ssardina - 2022)\n");
+
+    CmdLineParser parser = new CmdLineParser(Global.options, ParserProperties.defaults().withOptionSorter(null));
     Global.options.setParser(parser);
     try {
       parser.parseArgument(args);
+
+      if (Global.options.help) {
+        Global.options.printHelp(parser);
+        Global.ExitCode.EXIT_INPUT_ERROR.exit();
+      }
+
       Global.options.setDefaults();
       Global.options.parseArgs();
-      if(Global.options.getDomainFilename()!=null && Global.options
-          .getInstanceFilename()!=null){
-          execute_translator();
+      if (Global.options.getDomainFilename() != null && Global.options
+          .getInstanceFilename() != null) {
+        execute_translator();
 
       }
       Global.options.checkOptions();
     } catch (CmdLineException e) {
-      // Handling of wrong arguments.
+      // Handling of wrong arguments. Report help and quit
       System.err.println(e.getMessage() + "\n");
-      Global.options.help = true;
+      Global.options.printHelp(parser);
+			Global.ExitCode.EXIT_INPUT_ERROR.exit();
     }
+
     if (Global.options.help) {
-      Global.options.printHelp();
+      Global.options.printHelp(parser);
       Global.ExitCode.EXIT_INPUT_ERROR.exit();
     } else {
       // Create either a partially observable or a fully observable problem.
@@ -300,12 +317,12 @@ public class MyNDPlanner {
     // Start measuring of preprocessing time.
     startTime = System.currentTimeMillis();
 
-    // For Cegar, instantiate the Cegar handling instance and let that one handle the search.
+    // For Cegar, instantiate the Cegar handling instance and let that one handle
+    // the search.
     Result planFound = Result.UNDECIDED;
     if (Global.options.cegarAbstractionType != CegarSearch.AbstractionType.NONE) {
       long overallStartTime = startTime;
-      CegarSearch cegarSearch =
-          new CegarSearch(this, Global.options.cegarAbstractionType, cegarRefinementAlgorithm);
+      CegarSearch cegarSearch = new CegarSearch(this, Global.options.cegarAbstractionType, cegarRefinementAlgorithm);
       CegarSearch.Result result = cegarSearch.search();
       startTime = overallStartTime;
       planFound = result.planFound;
@@ -425,7 +442,6 @@ public class MyNDPlanner {
     // FIXME Do we want to return a copy here?
     return problem;
   }
-
 
   /**
    * Return the used search algorithm. Useful for reuse of the solution graph.

@@ -1,5 +1,6 @@
 package mynd;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -272,6 +273,24 @@ public class Options {
 
   // //////////////// Planner options //////////////////
 
+  /**
+	 * Provide path to translator from PDDL to SAS
+	 */
+	@Option(name = "-translatorPath", usage = "path to SAS translator script", metaVar = "DIRNAME")
+	String translatorPath = ".";
+
+	public String getTranslatorsPath() {
+		return translatorPath;
+	}
+	private void checkTranslatorsPath() throws CmdLineException {
+		if (translatorPath != null) {
+			File f = new File(translatorPath);
+			if (!f.exists())
+				throw new CmdLineException(parser, new Exception("Cannot find translators path"));
+		}
+	}
+
+
   @Option(name = "-computeCosts", usage = "compute and print expected costs of the plan",
       groups = {"MAIN"})
   public boolean computeCosts = false;
@@ -311,6 +330,8 @@ public class Options {
       testFilename(exportDotFilename, "-exportDot");
     }
   }
+
+
 
   /**
    * Timeout for the planner. The user gives the timeout in seconds. Internally we use milliseconds.
@@ -776,7 +797,11 @@ public class Options {
   /**
    * Prints the usage text to stderr. Note: Options without "usage" description are ignored.
    */
-  void printHelp() {
+  void printHelp(CmdLineParser parser) {
+    // parser.printUsage(java.lang.System.out);  
+		// System.exit(-1);
+
+
     System.err.println("Usage: java [java_options] mynd.MyNDPlanner [mynd_options] <sas_file>");
     System.err.println();
     if (hiddenOptions) {
