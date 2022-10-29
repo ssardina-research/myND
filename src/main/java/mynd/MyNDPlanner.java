@@ -165,19 +165,30 @@ public class MyNDPlanner {
 
     String domain = new File(Global.options.getDomainFilename()).getAbsolutePath();
     String instance = new File(Global.options.getInstanceFilename()).getAbsolutePath();
-    String translator;
+    String translator = "";
 
     String translatorPath = Global.options.getTranslatorsPath();
     if (Global.options.type == Options.Type.FOND) {
-      translator = Paths.get(translatorPath, "translator-fond", "translate.py").toFile().getAbsolutePath();;
+      translator = Paths.get(translatorPath, "translator-fond", "translate.py").normalize().toFile().getAbsolutePath();
     } else if (Global.options.type == Options.Type.POND) {
-      translator = Paths.get(translatorPath, "translator-fond", "translate.py").toFile().getAbsolutePath();;
+      translator = Paths.get(translatorPath, "translator-pond", "translate.py").normalize().toFile().getAbsolutePath();
     } else {
-      System.err.println("Translate type not specified");
-      return;
+      // we need to know what type of translation we are to use!
+      System.err.println("Translate type not specified via -type");
+      Global.ExitCode.EXIT_INPUT_ERROR.exit();
     }
 
     try {
+      System.out.println(String.format("Set FOND Translator Path: %s", translator));
+      System.out.println(String.format("Domain to translate: %s", domain));
+      System.out.println(String.format("Problem to translate: %s", instance));
+
+      // Before generating new output.sas, delete any previous version if any
+      File output_sas = new File("output.sas");
+      if (output_sas.delete()) {
+        System.out.println("Deleted existing file: " + output_sas.getName());
+      }
+
       Process translate_p = new ProcessBuilder(translator, domain, instance).start();
       InputStream is = translate_p.getInputStream();
       InputStreamReader isr = new InputStreamReader(is);
