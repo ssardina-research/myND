@@ -77,15 +77,13 @@ $ ./mynd.sh data/fond-pddl/blocksworld/domain.pddl data/fond-pddl/blocksworld/p1
 Presumably, one can run the system from the Java class files directly (folder `bin` after build) as follows:
 
 ```shell
-$ java <JavaOptions> mynd.MyNDPlanner <PlannerOptions> <SAS-file>
+$ java [java_options] mynd.MyNDPlanner [planner_options] <SAS-file>
 ```
 
 Useful Java Options are:
 
-```shell
-    * `-Xmx4g`: to set the maximum heap space to 4 GB
-    * `-ea`: to enable assertions
-```
+* `-Xmx4g`: to set the maximum heap space to 4 GB
+* `-ea`: to enable assertions
 
 However, it does not runn when there are planner options given:
 
