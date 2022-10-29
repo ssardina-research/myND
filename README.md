@@ -1,10 +1,19 @@
 # myND FOND Planner
 
-This is a fork of the [original myND repository](https://github.com/robertmattmueller/myND). It is itself a fork of [haz's fork](https://github.com/haz/myND) to make it compatible with newer Java, and better documented here.
+The myND non-deterministic planner.
 
 ## Build it
 
-myND requires Java 8 and Maven.
+The system requires:
+
+* Java JDK 8:
+  * [junit 4](https://junit.org/junit4/). Obtained via Maven but also available under `lib/` (for manual compile).
+* [Maven](https://maven.apache.org/) for building the system (and further development, if needed).
+* Python 3.6+ for [translator-fond](/translator-fond/) and [translator-pond](/translator-pond/) tools to translate FOND/POND PDDL files to SAS.
+
+**NOTE:** [args4j](https://args4j.kohsuke.org/) is used but not via a Maven dependency. Instead its source code is copied and extended to have groups of options and hidden options.
+
+Get the dependencies in Linux via:
 
 ```shell
 $ sudo apt-get install openjdk-8-jdk maven
@@ -17,35 +26,39 @@ $ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 $ mvn package -Dmaven.test.skip=true
 ```
 
-**Note:** Maven will not compile the system with Java 17.
+The above will produce JAR file `target/mynd-1.0-SNAPSHOT.jar` and all executable classes in `target/classes`.
 
-The above will produce `target/mynd-1.0-SNAPSHOT.jar`.
+**Note:** Maven will not compile the system with Java 17 (Open JDK). Still it seem to *run* with Java 17 once compiled.
 
 ## Run it
 
-**Note:** while compilation and Maven requires Java 8 (does not compile under Java 17), it seems it does run with Java 17.
-
-**Note:** at this point the planner needs to be called from its root project folder, because it calls the PDDL `translate` Python system in a relative path wrt that location. So one needs to first cd into myND planner folder and then runt it. This means the paths to the PDDL files need to be absolute (or from the myND folder!).
-
-To see all options available:
+The easiest way to use the planner is via its shell script [`myND`](/mynd):
 
 ```shell
-$ java -cp target/mynd-1.0-SNAPSHOT.jar mynd.MyNDPlanner -h help
+$ ./myND -h 
 ```
 
-The planner can take SAS encodings or original PDDL domain and problem files. For example, to run over a SAS file with 4GB of heap size and output the solution to file `plan` (use `-exportPlan`):
+The script already includes:
+
+* Java options `-Xmx4g` to set the maximum heap space to 4GB. We could also add `-ea` to enable assertions.
+* Usage of new `-translatePath` option to indicate where the Python translators are located. This allows the planner to be called from any directory, not just the root of the planner.
+
+The planner can take SAS encodings or original PDDL domain and problem files. For example, to run over a SAS file and output the solution to file `plan`:
 
 ```shell
-$ java -Xmx4g -cp target/mynd-1.0-SNAPSHOT.jar mynd.MyNDPlanner data/benchmarks-fond/blocksworld_p10.sas -exportPlan plan
+$ ./myND data/benchmarks-fond/blocksworld_p10.sas -exportPlan plan
+
+MyND FOND Planner (improved/cleanup version by ssardina - 2022)
+
 Heuristic: FF-heuristic.
 Algorithm: LAO*-search
 INITIAL IS PROVEN!
 
 Result: Strong cyclic plan found.
 
-Time needed for preprocess (Parsing, PDBs, ...):    0.011 seconds.
-Time needed for search:                             0.02 seconds.
-Time needed:                                        0.031 seconds.
+Time needed for preprocess (Parsing, PDBs, ...):    0.01 seconds.
+Time needed for search:                             0.036 seconds.
+Time needed:                                        0.046 seconds.
 Total Garbage Collections: 1
 Total Garbage Collection Time: 0 seconds.
 
@@ -56,42 +69,20 @@ Number of sensing applications in policy: 0
 Plan file: plan
 ```
 
-The same example but now over the original PDDL input files and with some options fixed:
+This is basically running:
 
 ```shell
-$ java -Xmx4g -cp target/mynd-1.0-SNAPSHOT.jar mynd.MyNDPlanner \
-    -type FOND -search LAOSTAR -heuristic FF  \
+$ java -Xmx4g -cp target/mynd-1.0-SNAPSHOT.jar mynd.MyNDPlanner data/benchmarks-fond/blocksworld_p10.sas -exportPlan plan
+```
+
+An example using PDDL files as input:
+
+```shell
+$ ./myND -type FOND -search LAOSTAR -heuristic FF  \
     data/fond-pddl/blocksworld/domain.pddl data/fond-pddl/blocksworld/p10.pddl
 ```
 
-This will also print out the translator's output (from PDDL to SAS).
-
-There is also a script `mynd.sh` to run the planner with default options:
-
-```shell
-$ ./mynd.sh data/fond-pddl/blocksworld/domain.pddl data/fond-pddl/blocksworld/p10.pddl
-```
-
-### Running from class files
-
-Presumably, one can run the system from the Java class files directly (folder `bin` after build) as follows:
-
-```shell
-$ java [java_options] mynd.MyNDPlanner [planner_options] <SAS-file>
-```
-
-Useful Java Options are:
-
-* `-Xmx4g`: to set the maximum heap space to 4 GB
-* `-ea`: to enable assertions
-
-However, it does not runn when there are planner options given:
-
-```shell
-$ cd bin
-$ java -ea -Xmx4g mynd.MyNDPlanner -search LAOSTAR -heuristic FF ../data/benchmarks-fond/blocksworld_p1.sas
-Option search unknown.
-```
+Note that this will call the Python translator, whose output will be reported.
 
 ## Options available
 
@@ -180,6 +171,11 @@ PDB options:
                                           preconditions of sensing actions
                                           (POND only) [default: ON]
 ```
+
+## Improvements
+
+- [haz's fork](https://github.com/haz/myND) adapted th code to run under newer Java version (Java 8).
+- [ssardina's fork](https://github.com/ssardina-planning/myND) fixed bugs with arguments, added option `--translatorPath`, and a script `myND` to run the planner from any directory. Also improved the README.
 
 ## Contact
 
