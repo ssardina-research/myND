@@ -1,5 +1,0 @@
-#!/bin/bash
-
-DIR=`dirname "$0"`
-
-java -Xmx4g -cp $DIR/target/mynd-1.0-SNAPSHOT.jar mynd.MyNDPlanner "$@"
