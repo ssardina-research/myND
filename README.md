@@ -10,10 +10,11 @@ myND requires Java 8 and Maven.
 $ sudo apt-get install openjdk-8-jdk maven
 ```
 
-To build it:
+To build it, first set-up `JAVA_HOME` to Java 8:
 
 ```shell
-$ JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ mvn package -Dmaven.test.skip=true
+$ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ 
+$ mvn package -Dmaven.test.skip=true
 ```
 
 **Note:** Maven will not compile the system with Java 17.
