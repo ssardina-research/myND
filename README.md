@@ -93,8 +93,95 @@ $ java -ea -Xmx4g mynd.MyNDPlanner -search LAOSTAR -heuristic FF ../data/benchma
 Option search unknown.
 ```
 
-Contact
-=======
+## Options available
+
+We do not print help manually as in the original planner, which means options re not grouped. The groups were as follows:
+
+```shell
+myND options:
+ -computeCosts                          : compute and print expected costs of
+                                          the plan
+ -dumpPlan                              : dump plan to stdout
+ -exportPlan FILENAME                   : export plan to file
+ -exportDot FILENAME                    : export plan as DOT graph (GraphViz)
+ -timeout N                             : set timeout in seconds
+
+Search algorithms:
+ -s (-search) [AOSTAR | LAOSTAR | FIP]  : set search algorithm [default:
+                                          LAOSTAR]
+
+Heuristics:
+ -heuristic [FF | PDBS | ZERO | LMCUT   : set heuristic [default: FF]
+ | HMAX]                                   
+
+Translate:
+ -t (-type) [FOND | POND]               : use fond or pond translate
+
+General POND options:
+ -aggregation [MAX | ADD | AVERAGE]     : set aggregation method for world
+                                          states (POND only) [default: MAX]
+ -numWorldStates N                      : set number of world states to be
+                                          sampled (POND only) [default: 10]
+
+CEGAR Options:
+ -ca (-cegarAbstraction) [NONE |        : set CEGAR abstraction type [default:
+ UNSOLVABILITY_OVERAPPROXIMATION |        NONE]
+ UNSOLVABILITY_DOUBLEAPPROXIMATION]        
+
+AO* Options:
+ -maxNumberOfNodesToExpand N            : set maximal number of nodes to expand
+                                          per iteration [default: 1]
+ -senseFirst [ON | OFF]                 : prefer sensing actions (POND only)
+                                          [default: ON]
+
+LAO* Options:
+ -maxNumberOfNodesToExpand N            : set maximal number of nodes to expand
+                                          per iteration [default: 1]
+ -senseFirst [ON | OFF]                 : prefer sensing actions (POND only)
+                                          [default: ON]
+
+FIP Options:
+ -weakPlanAlgorithm [ASTAR | WASTAR5 |  : set search algorithm for weak plan
+ WASTAR15 | WASTAR50 | BFS | ENFHC |      search [default: WASTAR5]
+ GREEDYBFS]                                
+ -searchDirection [GOAL | INTENDED |    : set search direction for fail state
+ PARENT]                                  search [default: GOAL]
+ -queueType [PRIORITY | FIFO]           : set order in which fail states are
+                                          handled [default: PRIORITY]
+ -maxDepth N                            : set max depth for fail state search
+                                          [default: 100]
+ -failStateHeuristic [FF | PDBS | ZERO  : specify heuristic for fail state
+ | LMCUT | HMAX]                          search [default: null]
+
+PDB options:
+ -patternSearch [NONE | FO | PO]        : set type of pattern search [default:
+                                          FO]
+ -steps N                               : set maximal number of hill climbing
+                                          iterations in pattern search
+                                          [default: inf]
+ -pdbTimeout N                          : set timeout in seconds for the
+                                          pattern search [default: 600]
+ -pdbMaxSize N                          : set maximal number of abstract states
+                                          induced by a single pattern [default:
+                                          -1]
+ -pdbsMaxSize N                         : set maximal number of abstract states
+                                          of all patterns [default: -1]
+ -minImprovement X                      : set fraction of required improvers to
+                                          continue pattern search [default: 0.1]
+ -cachePDBs [ON | OFF]                  : set caching of PDBs on/off [default:
+                                          ON]
+ -randomWalkSamples N                   : set number of samples that are
+                                          collected during random walks
+                                          [default: 1000]
+ -assumeFO                              : assume full observability for PDB
+                                          heuristic and search (POND only)
+                                          [default: false]
+ -useDependencyGraph [ON | OFF]         : use dependency graph for
+                                          preconditions of sensing actions
+                                          (POND only) [default: ON]
+```
+
+## Contact
 
 The original `myND` is not in GitHub at: https://github.com/robertmattmueller/myND
 

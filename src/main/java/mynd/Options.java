@@ -225,9 +225,7 @@ public class Options {
     }
   }
 
-  @Option(name="-t", aliases = "-type", usage = "use fond or pond translate",
-      help
-      = true,groups = {"TRANSLATE"})
+  @Option(name="-t", aliases = "-type", usage = "use fond or pond translate", help = true, groups = {"TRANSLATE"})
   Type type;
 
   public Type getType() {
@@ -276,7 +274,7 @@ public class Options {
   /**
 	 * Provide path to translator from PDDL to SAS
 	 */
-	@Option(name = "-translatorPath", usage = "path to SAS translator script", metaVar = "DIRNAME")
+	@Option(name = "-translatorPath", usage = "path to SAS translator scripts", metaVar = "DIRNAME")
 	String translatorPath = ".";
 
 	public String getTranslatorsPath() {
@@ -798,67 +796,66 @@ public class Options {
    * Prints the usage text to stderr. Note: Options without "usage" description are ignored.
    */
   void printHelp(CmdLineParser parser) {
-    // parser.printUsage(java.lang.System.out);  
+    parser.printUsage(java.lang.System.out);  
 		// System.exit(-1);
 
+    // System.err.println("Usage: java [java_options] mynd.MyNDPlanner [mynd_options] <sas_file>");
+    // System.err.println();
+    // if (hiddenOptions) {
+    //   System.err.println("Hidden options:");
+    //   parser.printUsage(System.err, OptionHandlerFilter.HIDDEN);
+    //   System.err.println();
+    // } else {
+    //   System.err.println("Help:");
+    //   parser.printUsage(System.err, new GroupFilter(Group.HELP));
+    //   System.err.println();
+    //   System.err.println("myND options:");
+    //   parser.printUsage(System.err, new GroupFilter(Group.MAIN));
+    //   System.err.println();
+    //   System.err.println("Search algorithms:");
+    //   parser.printUsage(System.err, new GroupFilter(Group.SEARCH));
+    //   System.err.println();
+    //   System.err.println("Heuristics:");
+    //   parser.printUsage(System.err, new GroupFilter(Group.HEURISTIC));
+    //   System.err.println();
+    //   System.err.println("Translate:");
+    //   parser.printUsage(System.err, new GroupFilter(Group.TRANSLATE));
+    //   System.err.println();
+    //   if (optionFilter != Type.FOND) {
+    //     System.err.println("General POND options:");
+    //     parser.printUsage(System.err,
+    //         new GroupFilter(new HashSet<Group>(Arrays.asList(Group.POND, Group.GENERAL))));
+    //     System.err.println();
+    //   }
 
-    System.err.println("Usage: java [java_options] mynd.MyNDPlanner [mynd_options] <sas_file>");
-    System.err.println();
-    if (hiddenOptions) {
-      System.err.println("Hidden options:");
-      parser.printUsage(System.err, OptionHandlerFilter.HIDDEN);
-      System.err.println();
-    } else {
-      System.err.println("Help:");
-      parser.printUsage(System.err, new GroupFilter(Group.HELP));
-      System.err.println();
-      System.err.println("myND options:");
-      parser.printUsage(System.err, new GroupFilter(Group.MAIN));
-      System.err.println();
-      System.err.println("Search algorithms:");
-      parser.printUsage(System.err, new GroupFilter(Group.SEARCH));
-      System.err.println();
-      System.err.println("Heuristics:");
-      parser.printUsage(System.err, new GroupFilter(Group.HEURISTIC));
-      System.err.println();
-      System.err.println("Translate:");
-      parser.printUsage(System.err, new GroupFilter(Group.TRANSLATE));
-      System.err.println();
-      if (optionFilter != Type.FOND) {
-        System.err.println("General POND options:");
-        parser.printUsage(System.err,
-            new GroupFilter(new HashSet<Group>(Arrays.asList(Group.POND, Group.GENERAL))));
-        System.err.println();
-      }
+    //   System.err.println("CEGAR Options:");
+    //   parser.printUsage(System.err, new GroupFilter(Group.CEGAR));
+    //   System.err.println();
 
-      System.err.println("CEGAR Options:");
-      parser.printUsage(System.err, new GroupFilter(Group.CEGAR));
-      System.err.println();
+    //   System.err.println("AO* Options:");
+    //   parser.printUsage(System.err, new GroupFilter(Group.AO));
+    //   System.err.println();
 
-      System.err.println("AO* Options:");
-      parser.printUsage(System.err, new GroupFilter(Group.AO));
-      System.err.println();
+    //   System.err.println("LAO* Options:");
+    //   parser.printUsage(System.err, new GroupFilter(Group.LAO));
+    //   System.err.println();
 
-      System.err.println("LAO* Options:");
-      parser.printUsage(System.err, new GroupFilter(Group.LAO));
-      System.err.println();
+    //   System.err.println("FIP Options:");
+    //   parser.printUsage(System.err, new GroupFilter(Group.FIP));
+    //   System.err.println();
 
-      System.err.println("FIP Options:");
-      parser.printUsage(System.err, new GroupFilter(Group.FIP));
-      System.err.println();
+    //   System.err.println("PDB options:");
+    //   parser.printUsage(System.err, new GroupFilter(Group.PDB));
+    // }
+    // System.err.println();
+    // System.err
+    // .println("Example: java -ea -Xmx4g mynd.MyNDPlanner -search LAOSTAR -heuristic FF ../data/benchmarks-fond/blocksworld_p1.sas");
 
-      System.err.println("PDB options:");
-      parser.printUsage(System.err, new GroupFilter(Group.PDB));
-    }
-    System.err.println();
-    System.err
-    .println("Example: java -ea -Xmx4g mynd.MyNDPlanner -search LAOSTAR -heuristic FF ../data/benchmarks-fond/blocksworld_p1.sas");
-
-    if (DEBUG) {
-      System.out.println();
-      System.out.println("ALL OPTIONS:");
-      parser.printUsage(System.out, OptionHandlerFilter.ALL);
-    }
+    // if (DEBUG) {
+    //   System.out.println();
+    //   System.out.println("ALL OPTIONS:");
+    //   parser.printUsage(System.out, OptionHandlerFilter.ALL);
+    // }
   }
 
 
