@@ -212,3 +212,4 @@ bin/
 ./project
 .project
 output.sas
+.vscode/settings.json
