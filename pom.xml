@@ -29,20 +29,8 @@
 
     <build>
         <directory>${project.basedir}/target</directory>
-        <!--<resources>
-            <resource>
-                <directory>src/main/py</directory>
-            </resource>
-        </resources>
-        -->
         <outputDirectory>${project.build.directory}/classes</outputDirectory>
-        <!--
-        <testResources>
-            <testResource>
-                <directory>src/main/py</directory>
-            </testResource>
-        </testResources>
-        -->
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
