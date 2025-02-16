@@ -1,8 +1,8 @@
 # myND FOND Planner
 
-The myND non-deterministic planner.
+An improved codebase for the [myND](https://github.com/robertmattmueller/myND) non-deterministic planner (2010).
 
-## Build it
+## Build
 
 The system requires:
 
@@ -11,9 +11,10 @@ The system requires:
 * [Maven](https://maven.apache.org/) for building the system (and further development, if needed).
 * Python 3.6+ for [translator-fond](/translator-fond/) and [translator-pond](/translator-pond/) tools to translate FOND/POND PDDL files to SAS.
 
-**NOTE:** [args4j](https://args4j.kohsuke.org/) is used but not via a Maven dependency. Instead its source code is copied and extended to have groups of options and hidden options.
+> [!NOTE]
+> Library [args4j](https://args4j.kohsuke.org/) is used but not via a Maven dependency. Instead its source code is copied and extended to have groups of options and hidden options.
 
-Get the dependencies in Linux via:
+Get the dependencies in Linux as follows:
 
 ```shell
 $ sudo apt-get install openjdk-8-jdk maven
@@ -23,19 +24,20 @@ To build it, first set-up `JAVA_HOME` to Java 8:
 
 ```shell
 $ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ 
-$ mvn package -Dmaven.test.skip=true
+$ mvn package -Dmaven.test.skip=true  # build!
 ```
 
 The above will produce JAR file `target/mynd-1.0-SNAPSHOT.jar` and all executable classes in `target/classes`.
 
-**Note:** Maven will not compile the system with Java 17 (Open JDK). Still it seem to *run* with Java 17 once compiled.
+> [!WARNING]
+> Maven will **not** compile the system with Java 17+ (Open JDK). Still it seem to *run* with Java 17+ once compiled (last test run with Java 21.0.6)
 
 ## Run it
 
-The easiest way to use the planner is via its shell script [`myND`](/mynd):
+The easiest way to use the planner is via its entry shell script `mynd`:
 
 ```shell
-$ ./myND -h 
+$ ./mynd -h 
 ```
 
 The script already includes:
@@ -46,7 +48,9 @@ The script already includes:
 The planner can take SAS encodings or original PDDL domain and problem files. For example, to run over a SAS file and output the solution to file `plan`:
 
 ```shell
-$ ./myND data/benchmarks-fond/blocksworld_p10.sas -exportPlan plan
+$ ./mynd data/benchmarks-fond/blocksworld_p10.sas -exportPlan plan
+Base dir for myND: /home/ssardina/PROJECTS/planning/FOND/myND.git
+java -Xmx4g -cp /home/ssardina/PROJECTS/planning/FOND/myND.git/target/mynd-1.0-SNAPSHOT.jar mynd.MyNDPlanner -translatorPath /home/ssardina/PROJECTS/planning/FOND/myND.git/ data/benchmarks-fond/blocksworld_p10.sas -exportPlan plan
 
 MyND FOND Planner (improved/cleanup version by ssardina - 2022)
 
@@ -69,16 +73,10 @@ Number of sensing applications in policy: 0
 Plan file: plan
 ```
 
-This is basically running:
-
-```shell
-$ java -Xmx4g -cp target/mynd-1.0-SNAPSHOT.jar mynd.MyNDPlanner data/benchmarks-fond/blocksworld_p10.sas -exportPlan plan
-```
-
 An example using PDDL files as input:
 
 ```shell
-$ ./myND -type FOND -search LAOSTAR -heuristic FF  \
+$ ./mynd -type FOND -search LAOSTAR -heuristic FF  \
     data/fond-pddl/blocksworld/domain.pddl data/fond-pddl/blocksworld/p10.pddl
 ```
 
@@ -86,7 +84,9 @@ Note that this will call the Python translator, whose output will be reported.
 
 ## Options available
 
-We do not print help manually as in the original planner, which means options re not grouped. The groups were as follows:
+Use `-h`  to get the list of options available.
+
+We do not print help manually as in the original planner, which means options are not grouped. The (original) groups is as follows:
 
 ```shell
 myND options:
@@ -174,7 +174,7 @@ PDB options:
 
 ## Improvements
 
-- [haz's fork](https://github.com/haz/myND) adapted th code to run under newer Java version (Java 8).
+- [haz's fork](https://github.com/haz/myND) adapted the codebase to be able to compile/run it under newer Java version (Java 8).
 - [ssardina's fork](https://github.com/ssardina-planning/myND) fixed bugs with arguments, added option `--translatorPath`, and a script `myND` to run the planner from any directory. Also improved the README.
 
 ## Contact
