@@ -1,7 +1,15 @@
 #!/bin/bash
 
-DIR=$(dirname "$0")
+# We use REALPATH to allow symbolic links to this script, so that the true basedir is found
+REALPATH=$(realpath $0)
+BASEDIR="$(dirname "$REALPATH")"
+echo "Base dir for myND: $BASEDIR"
 
-java -Xmx4g -cp $DIR/target/mynd-1.0-SNAPSHOT.jar mynd.MyNDPlanner \
-    -translatorPath $DIR/ "$@"
+CMD="java -Xmx4g -cp $BASEDIR/target/mynd-1.0-SNAPSHOT.jar mynd.MyNDPlanner -translatorPath $BASEDIR/ $@"
 
+# report command to execute
+echo $CMD
+echo
+
+# execute!
+$CMD
